@@ -5,13 +5,14 @@ import java.net.*;
 import red.QueryProcesser.QueeryProcesser;
 import red.QueryProcesser.Queerygenarater;
 import red.DataBase.Data;
+import red.DataBase.ListData;
 import red.Model.QueryDto;
 import red.Model.ResultDto;
 
 public class Server {
 
     private void ServerConfig() {
-        Data data = new Data();   // shared data store
+     
         final int port = 8888;
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -39,7 +40,7 @@ public class Server {
                         }
 
                         QueryDto qd = qg.generateQuery(message);
-                        ResultDto rd = qp.processQuery(qd, data);
+                        ResultDto rd = qp.processQuery(qd);
 
                         out.writeUTF("Success: " + rd.isSuccess() + ", Message: " + rd.getMessage());
                         out.flush();

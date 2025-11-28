@@ -3,9 +3,13 @@ package red.QueryProcesser;
 import red.Model.QueryDto;
 import red.Model.ResultDto;
 import red.DataBase.Data;
+import red.DataBase.ListData;
 
 public class QueeryProcesser {
-    public ResultDto processQuery(QueryDto queryDto,Data Data) {
+    Data Data = new Data();   
+    ListData listData = new ListData(); 
+
+    public ResultDto processQuery(QueryDto queryDto) {
         String command = queryDto.getCommandString();
         String key = queryDto.getKey();
         String value = queryDto.getValue();
@@ -13,30 +17,41 @@ public class QueeryProcesser {
 
         switch (command.toUpperCase()) {
             case "SET":
-                Data.set(key, value);
+                this.Data.set(key, value);
                 return new ResultDto(true, "Key " + key + " set to " + value);
             case "GET":
-                String retrievedValue = Data.get(key);
+                String retrievedValue = this.Data.get(key);
                 return new ResultDto(true, "Value for key " + key + " is " + retrievedValue);
             case "DEL":
-                boolean deleted = Data.del(key);
+                boolean deleted = this.Data.del(key);
                 if (deleted) {
                     return new ResultDto(true, "Key " + key + " deleted");
                 } else {
                     return new ResultDto(false, "Key " + key + " not found");
                 }
             case "EXISTS":
-                boolean exists = Data.exists(key);
+                boolean exists = this.Data.exists(key);
                 return new ResultDto(true, "Key " + key + " exists: " + exists  );  
             case "APPEND":
-                int newLength = Data.append(key, value);
+                int newLength = this.Data.append(key, value);
                 return new ResultDto(true, "New length of key " + key + " is " + newLength);
             case "INCR":
-                int incrementedValue = Data.incr(key);
+                int incrementedValue = this.Data.incr(key);
                 return new ResultDto(true, "Value for key " + key + " incremented to " + incrementedValue);
             case "DECR":
-                int decrementedValue = Data.decr(key);
+                int decrementedValue = this.Data.decr(key);
                 return new ResultDto(true, "Value for key " + key + " decremented to " + decrementedValue);
+            case "LPUSH":
+                this.listData.setIfAbsent(key);
+                int lpushLength = this.listData.lpush(key, value);
+                return new ResultDto(true, "After LPUSH, length of list at key " + key + " is " + lpushLength);
+            case "LPOP":
+                String lpopValue = this.listData.lpop(key);
+                return new ResultDto(true, "LPOP from key " + key + " returned value: " + lpopValue);
+            case "LLEN":
+                int llenLength = this.listData.llen(key);
+                return new ResultDto(true, "Length of list at key " + key + " is " + llenLength);
+                
             default:
                 return new ResultDto(false, "Unknown command: " + command);
         }
