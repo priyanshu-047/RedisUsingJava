@@ -12,6 +12,7 @@ public class Data {
         Data.expiry = new HashMap<>();
     }
 
+<<<<<<< HEAD
    
     private boolean isExpired(String key) {
         if (!expiry.containsKey(key)) return false;
@@ -32,9 +33,17 @@ public class Data {
     }
 
     
+=======
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
+>>>>>>> aa182dc (percitance)
     public void set(String key, String value) {
         data.put(key, value);
         expiry.remove(key); // remove expiry if exists (same as Redis SET)
+    }
+    public HashMap<String, String> getData() {
+        return data;
     }
 
    

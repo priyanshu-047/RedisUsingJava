@@ -17,6 +17,9 @@ public class ListData {
     public LinkedList<?> get(String key) {
         return listdata.get(key);
     }
+    public HashMap<String, LinkedList<String>> getList() {
+        return listdata;
+    }
 
     public void setIfAbsent(String key) {
         if (!listdata.containsKey(key))
@@ -31,12 +34,18 @@ public class ListData {
 
     public String lpop(String key){
         if(!listdata.containsKey(key)) return "";
-        else return listdata.get(key).pop();
+        else{
+            if(listdata.get(key).isEmpty()) return "";
+            else return listdata.get(key).pop();
+        } 
     }
 
     public int llen(String key){
         if(!listdata.containsKey(key)) return 0;
         else return listdata.get(key).size();
+    }
+    public boolean isEmpty() {
+        return listdata.isEmpty();
     }
 
 }

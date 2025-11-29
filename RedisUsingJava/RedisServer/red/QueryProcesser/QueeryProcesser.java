@@ -4,10 +4,12 @@ import red.Model.QueryDto;
 import red.Model.ResultDto;
 import red.DataBase.Data;
 import red.DataBase.ListData;
+import red.DataBase.SetData;
 
 public class QueeryProcesser {
     Data Data = new Data();   
     ListData listData = new ListData(); 
+    SetData setData = new SetData();
 
     public ResultDto processQuery(QueryDto queryDto) {
         String command = queryDto.getCommandString();
@@ -51,7 +53,19 @@ public class QueeryProcesser {
             case "LLEN":
                 int llenLength = this.listData.llen(key);
                 return new ResultDto(true, "Length of list at key " + key + " is " + llenLength);
-                
+            case "PING":
+                return new ResultDto(true, "PONG");
+            case "SADD":
+                this.setData.setIfAbsentSet(key);
+                boolean saddResult = this.setData.sadd(key, value);
+                return new ResultDto(true, "SADD result for key " + key + " is " + saddResult);
+            case "SREM":
+                boolean sremResult = this.setData.srem(key, value);
+                return new ResultDto(true, "SREM result for key " + key + " is " + sremResult);
+            case "SMEMBERS":
+                String members = this.setData.smembers(key);
+                return new ResultDto(true, "SMEMBERS for key " + key + ": " + members); 
+
             default:
                 return new ResultDto(false, "Unknown command: " + command);
         }
