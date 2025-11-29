@@ -66,6 +66,22 @@ public class QueeryProcesser {
                 String members = this.setData.smembers(key);
                 return new ResultDto(true, "SMEMBERS for key " + key + ": " + members); 
 
+            //ttl logic
+            case "TTL":
+                long ttl = this.Data.ttl(key);
+                return new ResultDto(true, "TTL for key " + key + " is " + ttl);
+            case "EXPIRE":
+                int seconds;
+                try {
+                    seconds = Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    return new ResultDto(false, "Invalid seconds value: " + value);
+                }
+                boolean expireResult = this.Data.expire(key, seconds);
+                return new ResultDto(true, "EXPIRE result for key " + key + " is" + expireResult);
+            case "PERSIST":
+                boolean persistResult = this.Data.persist(key);
+                return new ResultDto(true, "PERSIST result for key " + key + " is " + persistResult);
             default:
                 return new ResultDto(false, "Unknown command: " + command);
         }
