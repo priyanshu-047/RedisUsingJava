@@ -10,6 +10,8 @@ public class QueryDto {
         this.key = key;
         this.value = value;
     }
+    public QueryDto() {
+    }
     public String getCommandString() {
         return commandString;
     }

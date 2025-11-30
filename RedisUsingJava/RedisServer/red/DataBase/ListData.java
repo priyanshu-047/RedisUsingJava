@@ -5,13 +5,10 @@ import java.util.LinkedList;
 
 public class ListData {
 
-    // key key key
-    // value value value
-    // value value value
-    private HashMap<String, LinkedList<String>> listdata;
+    private static HashMap<String, LinkedList<String>> listdata;
 
     public ListData() {
-        this.listdata = new HashMap<>();
+        ListData.listdata = new HashMap<>();
     }
 
     public LinkedList<?> get(String key) {

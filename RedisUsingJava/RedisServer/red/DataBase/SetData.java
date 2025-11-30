@@ -5,14 +5,17 @@ import java.util.HashSet;
 
 
 public class SetData {
-    private HashMap<String, HashSet<String>> setdata;
+    private static HashMap<String, HashSet<String>> setdata;
 
     public SetData() {
-        this.setdata = new HashMap<>();
+        SetData.setdata = new HashMap<>();
     }
     public void setIfAbsentSet(String key) {
         if (!setdata.containsKey(key))
             setdata.put(key, new HashSet<>());
+    }
+    public HashMap<String, HashSet<String>> getSet() {
+        return setdata;
     }
     public boolean sadd(String key, String value) {
         return setdata.get(key).add(value);

@@ -7,6 +7,7 @@ import red.QueryProcesser.Queerygenarater;
 import red.Model.QueryDto;
 import red.Model.ResultDto;
 
+
 public class Server {
 
     private void ServerConfig() {
@@ -14,8 +15,8 @@ public class Server {
         final int port = 8888;
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server running on port " + port);
-
+             QueeryProcesser qp = new QueeryProcesser();
+             qp.setDataBase();
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Client connected!");
@@ -24,7 +25,7 @@ public class Server {
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
                 Queerygenarater qg = new Queerygenarater();
-                QueeryProcesser qp = new QueeryProcesser();
+                
 
                 while (true) {
                     try {
