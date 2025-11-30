@@ -6,57 +6,40 @@ import red.QueryProcesser.QueeryProcesser;
 import red.QueryProcesser.Queerygenarater;
 import red.Model.QueryDto;
 import red.Model.ResultDto;
+import red.pub_Sub.Subscribe;
 
 
 public class Server {
+    private Subscribe subscribe = new Subscribe();
 
     private void ServerConfig() {
      
         final int port = 8888;
-
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        ServerSocket serverSocket = null;
+        try{
+            serverSocket = new ServerSocket(port);
              QueeryProcesser qp = new QueeryProcesser();
              qp.setDataBase();
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Client connected!");
-
-                DataInputStream in = new DataInputStream(socket.getInputStream());
-                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-                Queerygenarater qg = new Queerygenarater();
-                
-
-                while (true) {
-                    try {
-                        String message = in.readUTF();
-                        System.out.println("Received: " + message);
-
-                        if (message.equalsIgnoreCase("exit")) {
-                            out.writeUTF("Goodbye!");
-                            out.flush();
-                            break;
-                        }
-
-                        QueryDto qd = qg.generateQuery(message);
-                        ResultDto rd = qp.processQuery(qd);
-
-                        out.writeUTF("Success: " + rd.isSuccess() + ", Message: " + rd.getMessage());
-                        out.flush();
-
-                    } catch (EOFException e) {
-                        System.out.println("Client disconnected abruptly.");
-                        break;
-                    }
-                }
-
-                socket.close();
-                System.out.println("Client connection closed.");
+                Threadclass thread = new Threadclass();
+                thread.setSocket(socket);
+                thread.start();
             }
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
+        } finally {
+            System.out.println("Server closed.");
+            try {
+                if(serverSocket != null && !serverSocket.isClosed()) {
+                    serverSocket.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+                
+        } 
     }
 
     public static void main(String[] args) {
