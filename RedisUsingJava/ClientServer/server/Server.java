@@ -8,21 +8,26 @@ import java.util.Scanner;
 
 public class Server {
 
-     public static void main(String[] args) {
-        try {
-            Socket socket = new Socket("127.0.0.1", 8888);
+    public static void main(String[] args) {
+        Socket socket = null;
+        DataInputStream dis = null;
+        DataOutputStream dos = null;
+        Scanner sc = null;
 
+        try {
+          
+            socket = new Socket("127.0.0.1", 8888);
             System.out.println("Connected to Redis Java Server!");
 
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-
-            Scanner sc = new Scanner(System.in);
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
+            sc = new Scanner(System.in);
 
             while (true) {
                 System.out.print("redis> ");
-                String command = sc.nextLine();
+                String command = sc.nextLine().trim();
 
+               
                 if (command.equalsIgnoreCase("exit")) {
                     dos.writeUTF("exit");
                     dos.flush();
@@ -32,16 +37,26 @@ public class Server {
                 dos.writeUTF(command);
                 dos.flush();
 
+               
                 String response = dis.readUTF();
                 System.out.println(response);
             }
 
-            sc.close();
-            socket.close();
             System.out.println("Client disconnected.");
 
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Connection Error: " + e.getMessage());
+
+        } finally {
+           
+            try {
+                if (dis != null) dis.close();
+                if (dos != null) dos.close();
+                if (socket != null) socket.close();
+                if (sc != null) sc.close();
+            } catch (IOException e) {
+                System.out.println("Closing Error: " + e.getMessage());
+            }
         }
     }
 }
