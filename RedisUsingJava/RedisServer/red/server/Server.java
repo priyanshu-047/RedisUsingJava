@@ -3,21 +3,14 @@ package red.server;
 import java.io.*;
 import java.net.*;
 import red.QueryProcesser.QueeryProcesser;
-import red.QueryProcesser.Queerygenarater;
-import red.Model.QueryDto;
-import red.Model.ResultDto;
-import red.pub_Sub.Subscribe;
-
 
 public class Server {
-    private Subscribe subscribe = new Subscribe();
-
+    static int count=0;
     private void ServerConfig() {
-     
         final int port = 8888;
         ServerSocket serverSocket = null;
         try{
-            serverSocket = new ServerSocket(port);
+             serverSocket = new ServerSocket(port);
              QueeryProcesser qp = new QueeryProcesser();
              qp.setDataBase();
             while (true) {

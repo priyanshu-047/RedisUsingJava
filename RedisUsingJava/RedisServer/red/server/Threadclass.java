@@ -3,33 +3,45 @@ package red.server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
-
 import red.Model.QueryDto;
 import red.Model.ResultDto;
 import red.QueryProcesser.Queerygenarater;
 import java.net.Socket;
+import red.Model.Subscriber;
 import red.QueryProcesser.QueeryProcesser;
 
+
 public class Threadclass extends Thread {
-    private Socket socket;
+    private String subscriberId;
+    private DataOutputStream out;
+    private DataInputStream in;
+    private Subscriber subscriber;
+    
 
     public void setSocket(Socket socket) {
-        this.socket = socket;
+        try {
+            this.out = new DataOutputStream(socket.getOutputStream());
+            this.in = new DataInputStream(socket.getInputStream());
+             this.subscriberId = "sub_" + Server.count++;
+             this.subscriber = new Subscriber(this.subscriberId, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       
+
     }
 
     @Override
     public void run() {
-        try {
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
+        try {
             Queerygenarater qg = new Queerygenarater();
             QueeryProcesser qp = new QueeryProcesser();
 
             while (true) {
                 try {
                     String message = in.readUTF();
-                    System.out.println("Received: " + message);
+                    System.out.println( message);
 
                     if (message.equalsIgnoreCase("exit")) {
                         out.writeUTF("Goodbye!");
@@ -38,7 +50,7 @@ public class Threadclass extends Thread {
                     }
 
                     QueryDto qd = qg.generateQuery(message);
-                    ResultDto rd = qp.processQuery(qd);
+                    ResultDto rd = qp.processQuery(qd, this.subscriber);
 
                     out.writeUTF("Success: " + rd.isSuccess() + ", Message: " + rd.getMessage());
                     out.flush();

@@ -7,6 +7,9 @@ import red.DataBase.ListData;
 import red.DataBase.SetData;
 import red.Persistence.Persistence;
 import red.Resp3Pro.*;
+import red.pub_Sub.Publish;
+import red.pub_Sub.Subscribe;
+import red.Model.Subscriber;
 
 public class QueeryProcesser {
     Data Data = new Data();
@@ -14,13 +17,15 @@ public class QueeryProcesser {
     SetData setData = new SetData();
     Persistence persistence = new Persistence();
     Resp3 resp3 = new Resp3();
+    Subscribe subscribe = new Subscribe();
+    Publish publish = new Publish();
 
     
     public void setDataBase() {
         persistence.retrievedValue(this.Data, this.setData, this.listData);
     }
 
-    public ResultDto processQuery(QueryDto queryDto) {
+    public ResultDto processQuery(QueryDto queryDto, Subscriber subscriber) {
         String command = queryDto.getCommandString();
         String key = queryDto.getKey();
         String value = queryDto.getValue();
@@ -98,6 +103,12 @@ public class QueeryProcesser {
             case "PDEL":
                 persistence.deleteFileContentent();
                 return resp3.respSimple("PERSISTENCE CLEARED");
+            case "SUB":
+                subscribe.subscribeTopic(key, subscriber.getOut(), subscriber.getSubscriberId());
+                return resp3.respSimple("SUBSCRIBED to " + key);
+            case "PUB":
+                 publish.publishMessage(key, value);
+                return resp3.respSimple("MESSAGE PUBLISHED");
 
             default:
                 return resp3.respError("Unknown command: " + command);

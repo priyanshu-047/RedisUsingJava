@@ -1,24 +1,30 @@
 package red.Model;
 
-import java.nio.channels.Channel;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class Subscriber {
     private String subscriberId;
-    private Channel channel;
-    public Subscriber(String subscriberId, Channel channel) {
+    private DataOutputStream out;
+
+    public Subscriber(String subscriberId, DataOutputStream out) {
         this.subscriberId = subscriberId;
-        this.channel = channel;
+        this.out = out;
     }
+
+    public void sendMessage(String msg) {
+        try {
+            out.writeUTF(msg);
+            out.flush();
+        } catch (IOException e) {
+            System.out.println("Failed to send message to " + subscriberId);
+        }
+    }
+
     public String getSubscriberId() {
         return subscriberId;
     }
-    public Channel getChannel() {
-        return channel;
-    }
-    public void setSubscriberId(String subscriberId) {
-        this.subscriberId = subscriberId;
-    }
-    public void setChannel(Channel channel) {
-        this.channel = channel;
+    public DataOutputStream getOut() {
+        return out;
     }
 }

@@ -38,7 +38,7 @@ public class Persistence {
         String[] lines = content.split("\n");
         for (String line : lines) {
             queryDto = qg.generateQuery(line);
-            qp.processQuery(queryDto);
+            qp.processQuery(queryDto,null);
             }
         fin.close();
        } catch (Exception e) {

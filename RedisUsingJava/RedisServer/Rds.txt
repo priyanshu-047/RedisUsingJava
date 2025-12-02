@@ -1,1 +1,3 @@
-SET a 45
+SET name mohit
+SADD id 234
+SADD id 4564
