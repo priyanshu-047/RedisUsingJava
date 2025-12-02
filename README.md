@@ -1,10 +1,9 @@
 # RedisUsingJava
-Implementing redis in java
-Redis Clone in Java
-A lightweight, Redis-like in-memory data store built completely in Java, supporting:
-✔ Key-Value Store
-✔ Lists
-✔ Sets
+Redis implementation in Java
+A lightweight, Redis-like in-memory data store built completely in Java, supporting:\n
+✔ Key-Value Store\n
+✔ Lists\n
+✔ Sets\n
 ✔ TTL (expire)
 ✔ Persistence (RDB-style snapshot)
 ✔ RESP3 Protocol
